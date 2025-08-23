@@ -1,8 +1,53 @@
 <!doctype html>
-<html>
-  <head><meta charset="utf-8" /><title>Demo</title></head>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Button + Page Event Listeners</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; }
+      body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #f6f7f9; }
+      .wrap { text-align: center; }
+      #big-btn {
+        font-size: 2rem; padding: 1.25rem 2rem; border-radius: 14px; border: none;
+        cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,.08); background: white;
+      }
+      #log {
+        margin-top: 1rem; font-size: .95rem; color: #444; background: #fff; padding: .75rem 1rem;
+        border-radius: 10px; min-width: 320px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,.05);
+      }
+    </style>
+  </head>
   <body>
-    <button id="btn">Click me</button>
-    <script>alert(1)</script>
+    <div class="wrap">
+      <button id="big-btn">👉 Click Me</button>
+      <div id="log">Try clicking around the page…</div>
+    </div>
+
+    <!-- Runs in the browser (so alert() is defined) -->
+    <script defer>
+      const btn = document.getElementById('big-btn');
+      const log = document.getElementById('log');
+
+      // Button-specific listener
+      btn.addEventListener('click', (e) => {
+        // Stop the click from reaching the page listener; remove this line if you want both to fire.
+        e.stopPropagation();
+        alert('Button clicked!');
+        log.textContent = 'Button listener fired.';
+      });
+
+      // Whole-page listener
+      document.addEventListener('click', (e) => {
+        // Ignore clicks on the button if you didn’t use stopPropagation
+        if (e.target === btn) return;
+        log.textContent = `Page listener: you clicked a <${e.target.tagName.toLowerCase()}> element.`;
+      }, { passive: true });
+
+      // (Optional) show when the page is ready
+      document.addEventListener('DOMContentLoaded', () => {
+        log.textContent = 'Page is ready. Click the big button or anywhere else.';
+      });
+    </script>
   </body>
 </html>
